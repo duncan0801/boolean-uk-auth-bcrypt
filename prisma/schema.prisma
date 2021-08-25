@@ -59,3 +59,10 @@ model Outfit {
     guestId    Int?
     guest      Guest?   @relation(fields: [guestId], references: [id])
 }
+
+model User {
+    id       Int     @id @default(autoincrement())
+    userName String
+    password String
+    bio      String?
+}

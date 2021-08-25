@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../dist/server');
+var app = require('../dist/server')
 var debug = require('debug')('boolean-uk-api-data-models:server');
 var http = require('http');
 

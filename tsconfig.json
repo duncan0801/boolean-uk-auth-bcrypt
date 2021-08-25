@@ -75,5 +75,7 @@
   },
   "include": [
     "src/**/*"
-]
+]// Tells the compiler where to look for .ts
 }
+
+//
