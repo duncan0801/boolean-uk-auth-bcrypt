@@ -19,11 +19,13 @@ app.use(express_1.default.json());
 // const eventRouter = require("./resources/event/router");
 // const outfitRouter = require("./resources/outfit/router");
 const router_1 = __importDefault(require("./resources/user/router"));
+const router_2 = __importDefault(require("./resources/auth/router"));
 //ROUTES
 // app.use("/designers", designerRouter);
 // app.use("/guests", guestRouter);
 // app.use("/events", eventRouter);
 // app.use("/outfits", outfitRouter);
+app.use(router_2.default);
 app.use("/users", router_1.default);
 app.all("*", (req, res) => {
     res.json({ msg: "End of the line" });

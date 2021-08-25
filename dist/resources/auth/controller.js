@@ -8,25 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.createUser = void 0;
-const dbClient_1 = __importDefault(require("../../utils/dbClient"));
-const service_1 = __importDefault(require("./service"));
-function createUser(req, res) {
+exports.loginUser = void 0;
+const service_1 = require("./service");
+function loginUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const userInfo = req.body;
-        const newUser = yield service_1.default.create(userInfo); //new create function from service.ts
-        res.json({ newUser });
+        const loginData = req.body;
+        try {
+            const foundUser = yield service_1.findUserWithValidation(loginData);
+            res.json({ foundUser: { id: foundUser.id, userName: foundUser.userName } });
+        }
+        catch (error) {
+            res.status(401).json({ error: error.message });
+        }
     });
 }
-exports.createUser = createUser;
-function getAllUsers(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const allUsers = yield dbClient_1.default.user.findMany();
-        res.json({ users: allUsers });
-    });
-}
-exports.getAllUsers = getAllUsers;
+exports.loginUser = loginUser;

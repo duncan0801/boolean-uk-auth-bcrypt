@@ -12,21 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.createUser = void 0;
+exports.findUserWithValidation = void 0;
 const dbClient_1 = __importDefault(require("../../utils/dbClient"));
-const service_1 = __importDefault(require("./service"));
-function createUser(req, res) {
+const bcrypt_1 = require("bcrypt");
+function findUserWithValidation(userInfo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const userInfo = req.body;
-        const newUser = yield service_1.default.create(userInfo); //new create function from service.ts
-        res.json({ newUser });
+        const foundUser = yield dbClient_1.default.user.findUnique({
+            where: { userName: userInfo.userName },
+        });
+        if (!foundUser)
+            throw new Error("Username/password incorrect ");
+        const isPasswordValid = yield bcrypt_1.compare(userInfo.password, foundUser.password);
+        if (!isPasswordValid)
+            throw new Error("Username/password incorrect ");
+        return foundUser;
     });
 }
-exports.createUser = createUser;
-function getAllUsers(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const allUsers = yield dbClient_1.default.user.findMany();
-        res.json({ users: allUsers });
-    });
-}
-exports.getAllUsers = getAllUsers;
+exports.findUserWithValidation = findUserWithValidation;

@@ -12,21 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.createUser = void 0;
 const dbClient_1 = __importDefault(require("../../utils/dbClient"));
-const service_1 = __importDefault(require("./service"));
-function createUser(req, res) {
+const bcrypt_1 = require("bcrypt");
+function create(userInfo) {
     return __awaiter(this, void 0, void 0, function* () {
-        const userInfo = req.body;
-        const newUser = yield service_1.default.create(userInfo); //new create function from service.ts
-        res.json({ newUser });
+        const plainTextPassword = userInfo.password;
+        const hashedPassword = yield bcrypt_1.hash(plainTextPassword, 10);
+        const newUser = yield dbClient_1.default.user.create({
+            data: Object.assign(Object.assign({}, userInfo), { password: hashedPassword }),
+        });
+        return newUser;
     });
 }
-exports.createUser = createUser;
-function getAllUsers(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const allUsers = yield dbClient_1.default.user.findMany();
-        res.json({ users: allUsers });
-    });
-}
-exports.getAllUsers = getAllUsers;
+exports.default = Object.assign(Object.assign({}, dbClient_1.default), { create });
